@@ -166,16 +166,15 @@ void Widget::getcompletionsign(int selectiondone)
 
 void Widget::on_camshift_clicked()
 {
-    static bool hasclick=true;
-    if(hasclick)
+    if(selthm!='c')
     {
-        hasclick=false;
+        selthm='c';
         connect(ui->Video,SIGNAL(sendrect(Rect)),this,SLOT(getrect(Rect)));
         connect(ui->Video,SIGNAL(selectiondone(int)),this,SLOT(getcompletionsign(int)));
     }
     else
     {
-        hasclick=true;
+        selthm='o';
         selectObject=false;
         trackObject=0;
         trackWindow=Rect(0,0,0,0);
