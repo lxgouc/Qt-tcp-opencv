@@ -73,6 +73,7 @@ private:
     Rect trackWindow;
     Mat hsv, hue, mask, hist, histimg = Mat::zeros(200, 320, CV_8UC3), backproj;
     bool selectObject;
+    char selthm;
     int trackObject;
 };
 

@@ -17,6 +17,7 @@ Widget::Widget(QWidget *parent) :
     timer=new QTimer(this);
     tcpserver=new QTcpServer(this);
     selectObject=false;
+    selthm='o';
     trackObject=0;
     //receivedbytes=0;
     //framesize=0;
@@ -137,7 +138,14 @@ void Widget::showframe(QByteArray &frameval)
     vector<unsigned char>::size_type strsize=frameval.size();
     vector<unsigned char>buffer(strframe,strframe+strsize);
     Mat frame=imdecode(buffer,CV_LOAD_IMAGE_COLOR);
-    camshiftalgorithm(frame);
+    switch (selthm)
+    {
+    case 'c':
+        camshiftalgorithm(frame);
+        break;
+    default:
+        break;
+    }
     QImage image=MatToQImage(frame);
     //QImage image((const uchar*)frame.imageData,frame.width,frame.height,QImage::Format_RGB888);
     ui->Video->setPixmap(QPixmap::fromImage(image));
@@ -158,8 +166,20 @@ void Widget::getcompletionsign(int selectiondone)
 
 void Widget::on_camshift_clicked()
 {
-    connect(ui->Video,SIGNAL(sendrect(Rect)),this,SLOT(getrect(Rect)));
-    connect(ui->Video,SIGNAL(selectiondone(int)),this,SLOT(getcompletionsign(int)));
+    static bool hasclick=true;
+    if(hasclick)
+    {
+        hasclick=false;
+        connect(ui->Video,SIGNAL(sendrect(Rect)),this,SLOT(getrect(Rect)));
+        connect(ui->Video,SIGNAL(selectiondone(int)),this,SLOT(getcompletionsign(int)));
+    }
+    else
+    {
+        hasclick=true;
+        selectObject=false;
+        trackObject=0;
+        trackWindow=Rect(0,0,0,0);
+    }
 }
 
 void Widget::camshiftalgorithm(Mat &image)
