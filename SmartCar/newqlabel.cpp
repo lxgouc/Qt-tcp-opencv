@@ -23,17 +23,16 @@ void NewQLabel::mouseMoveEvent(QMouseEvent *event)
     {
         endpoint=event->pos();
         update();
-        if(qAbs(selection.width)>0 && qAbs(selection.height)>0)
-        {
-            selection.x+=1;
-            selection.y+=11;
-            emit sendrect(selection);
-        }
+        selection &= Rect(0, 0, this->width(), this->height());
+        selection.x+=1;
+        selection.y+=11;
+        emit sendrect(selection);
     }
 }
 
 void NewQLabel::mouseReleaseEvent(QMouseEvent *event)
 {
+    qDebug()<<endpoint.y();
     if(event->button()==Qt::LeftButton)
     {
         //selection=Rect(0,0,0,0);
@@ -41,20 +40,21 @@ void NewQLabel::mouseReleaseEvent(QMouseEvent *event)
         endpoint=QPoint(0,0);
         update();
     }
-    emit selectiondone(-1);
+    if(selection.width>0 && selection.height>0)
+    {
+        emit selectiondone(-1);
+    }
 }
 
 void NewQLabel::paintEvent(QPaintEvent *event)
 {
     QLabel::paintEvent(event);
-    selection.x = startpoint.x();
-    selection.y = startpoint.y();
-    selection.width = endpoint.x() - startpoint.x();
-    selection.height = endpoint.y() - startpoint.y();
-    //selection &= Rect(0, 0, this->width(), this->height());
+    selection.x = qMin(endpoint.x(),startpoint.x());
+    selection.y = qMin(endpoint.y(),startpoint.y());
+    selection.width = qAbs(endpoint.x() - startpoint.x());
+    selection.height = qAbs(endpoint.y() - startpoint.y());
     QPainter painter;
     painter.begin(this);
-    painter.drawRect(startpoint.x(),startpoint.y(),selection.width,selection.height);
+    painter.drawRect(selection.x,selection.y,selection.width,selection.height);
     painter.end();
-    qDebug()<<"lxg";
 }
