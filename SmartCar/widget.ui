@@ -81,7 +81,7 @@
         <item>
          <widget class="QPushButton" name="camshift">
           <property name="text">
-           <string>PushButton</string>
+           <string>CamShift</string>
           </property>
          </widget>
         </item>
