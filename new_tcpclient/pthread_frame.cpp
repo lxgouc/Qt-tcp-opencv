@@ -63,7 +63,6 @@ void getframe(int tcpsocket)
 			perror("frame is empty!!!\n");
 			exit(1);
 		}
-		//cvtColor(frame,frame,CV_BGR2RGB);
 		imencode(".jpg",frame,buff,param);
 		vector<unsigned char>::size_type size=buff.size();
 		sendframe(buff,size,tcpsocket);
