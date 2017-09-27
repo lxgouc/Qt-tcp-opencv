@@ -70,6 +70,7 @@ private:
     //QByteArray secframehead;
     QImage image;
     Rect selection;
+    Rect trackWindow;
     Mat hsv, hue, mask, hist, histimg = Mat::zeros(200, 320, CV_8UC3), backproj;
     bool selectObject;
     int trackObject;

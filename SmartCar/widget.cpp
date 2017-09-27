@@ -57,9 +57,7 @@ void Widget::acceptconnection()
 {
     tcpsocket=tcpserver->nextPendingConnection();
     connect(tcpsocket,SIGNAL(readyRead()),this,SLOT(getframe()));
-    //connect(this,SIGNAL(sendframedata()),this,SLOT(showframe()));
     connect(tcpsocket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(displayerror(QAbstractSocket::SocketError)));
-    //connect(tcpsocket,SIGNAL(disconnected()),tcpsocket,SLOT(deleteLater()));
     tcpserver->close();
 
 }
@@ -68,6 +66,7 @@ void Widget::displayerror(QAbstractSocket::SocketError)
 {
     qDebug()<<tcpsocket->errorString();
     tcpsocket->close();
+    ui->Video->clear();
 }
 
 /*void Widget::showframe(QByteArray &frameval)
@@ -108,34 +107,25 @@ void Widget::getframe()
 
 void Widget::getframe()
 {
-    qDebug()<<"start..........................";
     static bool hashead=true;
     secframebytes.append(tcpsocket->readAll());
     qDebug()<<secframebytes.size();
     static vector<unsigned char>::size_type num;
     if(hashead)
     {
-        qDebug()<<"hashead";
         QByteArray head(secframebytes.left(sizeof(vector<unsigned char>::size_type)));
         secframebytes.remove(0,sizeof(vector<unsigned char>::size_type));
         memcpy(&num,head.data(),sizeof(vector<unsigned char>::size_type));
-        //num=head.toLong();
-        qDebug()<<"num:"<<num;
-        qDebug()<<"headsecframebytes>>>>"<<secframebytes.size();
         hashead=false;
     }
-    //QDataStream indata(&secframebytes,QIODevice::ReadOnly);
-    //indata.setVersion(QDataStream::Qt_4_8);
-    //indata>>framesize;
+
     if(num<=(unsigned)secframebytes.size())
     {
-        qDebug()<<"secframebytes:::"<<secframebytes.size();
         QByteArray data(secframebytes.mid(0,num));
         secframebytes.remove(0,num);
         hashead=true;
         num=0;
         showframe(data);
-        qDebug()<<"end........................."<<endl;
     }
     else
         return;
@@ -143,13 +133,11 @@ void Widget::getframe()
 
 void Widget::showframe(QByteArray &frameval)
 {
-    qDebug()<<"showframe";
-    qDebug()<<"framevalsize:"<<frameval.size();
     unsigned char *strframe=(unsigned char*)(frameval.data());
     vector<unsigned char>::size_type strsize=frameval.size();
-    qDebug()<<"strsize:"<<strsize;
     vector<unsigned char>buffer(strframe,strframe+strsize);
     Mat frame=imdecode(buffer,CV_LOAD_IMAGE_COLOR);
+    camshiftalgorithm(frame);
     QImage image=MatToQImage(frame);
     //QImage image((const uchar*)frame.imageData,frame.width,frame.height,QImage::Format_RGB888);
     ui->Video->setPixmap(QPixmap::fromImage(image));
@@ -159,7 +147,7 @@ void Widget::getrect(Rect tmpselection)
 {
     selectObject=true;
     selection=tmpselection;
-    qDebug()<<"getrect";
+    qDebug()<<selection.x;
 }
 
 void Widget::getcompletionsign(int selectiondone)
@@ -176,7 +164,6 @@ void Widget::on_camshift_clicked()
 
 void Widget::camshiftalgorithm(Mat &image)
 {
-    Rect trackWindow;
     int hsize = 16;
     float hranges[] = {0,180};
     const float *phranges = hranges;
@@ -199,7 +186,6 @@ void Widget::camshiftalgorithm(Mat &image)
             trackWindow = selection;
             trackObject = 1;
         }
-
 
         calcBackProject(&hue, 1, 0, hist, backproj, &phranges);
         backproj &= mask;
