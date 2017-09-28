@@ -146,8 +146,9 @@ void Widget::showframe(QByteArray &frameval)
     default:
         break;
     }
-    QImage image=MatToQImage(frame);
-    //QImage image((const uchar*)frame.imageData,frame.width,frame.height,QImage::Format_RGB888);
+    //QImage image=MatToQImage(frame);
+    cvtColor(frame,frame,CV_BGR2RGB);
+    QImage image((const uchar*)frame.data,frame.cols,frame.rows,QImage::Format_RGB888);
     ui->Video->setPixmap(QPixmap::fromImage(image));
 }
 
@@ -155,7 +156,6 @@ void Widget::getrect(Rect tmpselection)
 {
     selectObject=true;
     selection=tmpselection;
-    qDebug()<<selection.x;
 }
 
 void Widget::getcompletionsign(int selectiondone)
@@ -218,8 +218,6 @@ void Widget::camshiftalgorithm(Mat &image)
                           Rect(0, 0, cols, rows);
         }
 
-//        if( backprojMode )
-//            cvtColor( backproj, image, COLOR_GRAY2BGR );
         ellipse( image, trackBox, Scalar(0,0,255), 3, LINE_AA );
     }
 
