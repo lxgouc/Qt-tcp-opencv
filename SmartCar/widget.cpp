@@ -1,8 +1,6 @@
 #include "widget.h"
 #include "ui_widget.h"
 #include <QDebug>
-#include <QDateTime>
-#include <QMouseEvent>
 #include <QPainter>
 #include <vector>
 #include <string.h>
@@ -181,6 +179,8 @@ void Widget::on_camshift_clicked()
         selectObject=false;
         trackObject=0;
         trackWindow=Rect(0,0,0,0);
+        disconnect(ui->Video,SIGNAL(sendrect(Rect)),this,SLOT(getrect(Rect)));
+        disconnect(ui->Video,SIGNAL(selectiondone(int)),this,SLOT(getcompletionsign(int)));
     }
 }
 
