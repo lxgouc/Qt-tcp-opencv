@@ -32,7 +32,6 @@ void NewQLabel::mouseMoveEvent(QMouseEvent *event)
 
 void NewQLabel::mouseReleaseEvent(QMouseEvent *event)
 {
-    qDebug()<<endpoint.y();
     if(event->button()==Qt::LeftButton)
     {
         //selection=Rect(0,0,0,0);

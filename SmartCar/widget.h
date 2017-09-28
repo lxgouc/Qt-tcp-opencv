@@ -30,6 +30,8 @@ public:
 
     void camshiftalgorithm(Mat &image);
 
+    void detectAndDraw( Mat& img, CascadeClassifier& cascade,CascadeClassifier& nestedCascade,double scale, bool tryflip );
+
 signals:
     void sendframedata();
 
@@ -54,6 +56,8 @@ private slots:
 
     void on_camshift_clicked();
 
+    void on_facedetect_clicked();
+
 private:
     Ui::Widget *ui;
     QTimer *timer;
@@ -75,6 +79,7 @@ private:
     bool selectObject;
     char selthm;
     int trackObject;
+    CascadeClassifier cascade, nestedCascade;
 };
 
 #endif // WIDGET_H

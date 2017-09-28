@@ -72,9 +72,9 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_7">
+         <widget class="QPushButton" name="facedetect">
           <property name="text">
-           <string>PushButton</string>
+           <string>FaceDetect</string>
           </property>
          </widget>
         </item>
