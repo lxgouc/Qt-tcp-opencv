@@ -11,6 +11,7 @@
 #include "pthread_xxx.h"
 
 using namespace std;
+#define NUM 8
 
 int network_init_xxx(char *str, uint16_t port)
 {
@@ -45,24 +46,23 @@ bool getarduinodata(int &serial, char *line)
   if(serialDataAvail(serial))
   {
     while(len<8)
-      len+=read(serial,line+len,8-len);
+      len+=read(serial,line+len,NUM-len);
     return true;
   }
   else
     return false;
 }
 
-void sendarduinodata(int socket, string line)
+void sendarduinodata(int socket, const char* line)
 {
-    const char *cstr=line.c_str();
-    if((write(socket,cstr,line.size()))==-1)
+    if((write(socket,line,NUM)==-1)
     {
     	perror("write error!!1\n");
     	exit(1);
     }
 }
 
-/*char getraspberrydata(int socket)
+/*char deepintorpi(int socket)
 {   
 	char data[128];
 	int num;
@@ -83,7 +83,7 @@ void sendarduinodata(int socket, string line)
 	}
 }*/
 
-void sendraspberrydata()
+void rpitoarduino()
 {
 
 }

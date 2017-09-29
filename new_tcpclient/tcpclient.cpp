@@ -76,9 +76,9 @@ void *pthread_xxx(void *arg)
 	while(1)
 	{
 		char *line=(char*)malloc(128);
-		if(getarduinodata(serial,line))
+		if(arduinotorpi(serial,line))
 		{
-			sendarduinodata(tcpsocket,line);
+			rpitodeepin(tcpsocket,line);
 		}
 		free(line);
 	}

@@ -5,10 +5,10 @@
 using namespace std;
 void *pthread_xxx(void *arg);
 int network_init_xxx(char*, uint16_t);
-bool getarduinodata(int&, char*);
-void sendarduinodata(int, string);
+bool arduinotorpi(int&, char*);
+void rpitodeepin(int, const char*);
 
-char getraspberrydata(int);
-void sendraspberrydata();
+char deepintorpi(int);
+void rpitoarduino();
 
 #endif
