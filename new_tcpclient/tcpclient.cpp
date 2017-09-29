@@ -73,16 +73,14 @@ void *pthread_xxx(void *arg)
 		perror("can`t find arduino!!!\n");
 		exit(1);
 	}
-	string *buf=new string;
 	while(1)
 	{
-		string line;
-		line=getarduinodata(serial,buf);
-		if(line.empty())
-			continue;
-		sendarduinodata(tcpsocket,line);
+		char *line=(char*)malloc(128);
+		if(getarduinodata(serial,line))
+		{
+			sendarduinodata(tcpsocket,line);
+		}
+		free(line);
 	}
-    free(buf);
-    buf=NULL;
     pthread_exit(NULL);
 }

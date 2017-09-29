@@ -39,45 +39,17 @@ int network_init_xxx(char *str, uint16_t port)
 	}
 }
 
-
-string getarduinodata(int &serial, string *buf)
-{	
-	char *tmpbuf=(char*)malloc(128);
-    if(serialDataAvail(serial))
-    {
-    	int num=0;
-    	if((num=read(serial,tmpbuf,serialDataAvail(serial)))!=-1)
-    	{
-    		buf->append(tmpbuf,num);
-    		free(tmpbuf);
-    		tmpbuf=NULL;
-    		//strcat(buf,tmpbuf);
-    		if(buf->size()>=8)
-    		{
-               if((*buf)[0]=='H')
-               {
-                   string tmpdata;
-                   tmpdata=buf->substr(0,8);
-                   buf->erase(0,8);
-                   return tmpdata;
-               }
-               else
-               {
-               	   cout<<"data error!!!"<<endl;
-               	   exit(1);
-               }
-    		}
-    		else
-    			return string();
-    	}
-    	else
-    	{
-    		cout<<"read data error!!!"<<endl;
-    		exit(1);
-    	}
-    }
-    else
-    	return string();
+bool getarduinodata(int &serial, char *line)
+{
+  int len=0;
+  if(serialDataAvail(serial))
+  {
+    while(len<8)
+      len+=read(serial,line+len,8-len);
+    return true;
+  }
+  else
+    return false;
 }
 
 void sendarduinodata(int socket, string line)

@@ -5,7 +5,7 @@
 using namespace std;
 void *pthread_xxx(void *arg);
 int network_init_xxx(char*, uint16_t);
-string getarduinodata(int&, string*);
+bool getarduinodata(int&, char*);
 void sendarduinodata(int, string);
 
 char getraspberrydata(int);
