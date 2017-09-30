@@ -1,3 +1,4 @@
+#include "pthread_xxx.h"
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -8,7 +9,7 @@
 #include <cstring>
 #include <wiringPi.h>
 #include <wiringSerial.h>
-#include "pthread_xxx.h"
+#include "network_init.h"
 
 using namespace std;
 #define NUM 8

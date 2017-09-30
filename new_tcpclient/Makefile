@@ -33,7 +33,7 @@ MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = new_tcpclient1.0.0
-DISTDIR = /home/lxg/ouc/new_tcpclient/.tmp/new_tcpclient1.0.0
+DISTDIR = /home/lxg/ouc/Qt-tcp-opencv/new_tcpclient/.tmp/new_tcpclient1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-O1 -Wl,-rpath,/opt/Qt5.6.2/5.6/gcc_64/lib
 LIBS          = $(SUBLIBS) `pkg-config opencv --cflags --libs` -lwiringPi -lrt -lcrypt -L/opt/Qt5.6.2/5.6/gcc_64/lib -lQt5Gui -L/usr/lib64 -lQt5Core -lGL -lpthread 
@@ -50,9 +50,11 @@ OBJECTS_DIR   = ./
 
 SOURCES       = pthread_frame.cpp \
 		pthread_xxx.cc \
+		network_init.cc \
 		tcpclient.cpp 
 OBJECTS       = pthread_frame.o \
 		pthread_xxx.o \
+		network_init.o \
 		tcpclient.o
 DIST          = /opt/Qt5.6.2/5.6/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt5.6.2/5.6/gcc_64/mkspecs/common/unix.conf \
@@ -188,8 +190,10 @@ DIST          = /opt/Qt5.6.2/5.6/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt5.6.2/5.6/gcc_64/mkspecs/features/yacc.prf \
 		/opt/Qt5.6.2/5.6/gcc_64/mkspecs/features/lex.prf \
 		new_tcpclient.pro pthread_frame.h \
-		pthread_xxx.h pthread_frame.cpp \
+		pthread_xxx.h \
+		network_init.h pthread_frame.cpp \
 		pthread_xxx.cc \
+		network_init.cc \
 		tcpclient.cpp
 QMAKE_TARGET  = new_tcpclient
 DESTDIR       = 
@@ -489,8 +493,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents pthread_frame.h pthread_xxx.h $(DISTDIR)/
-	$(COPY_FILE) --parents pthread_frame.cpp pthread_xxx.cc tcpclient.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents pthread_frame.h pthread_xxx.h network_init.h $(DISTDIR)/
+	$(COPY_FILE) --parents pthread_frame.cpp pthread_xxx.cc network_init.cc tcpclient.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -529,7 +533,8 @@ compiler_clean:
 
 ####### Compile
 
-pthread_frame.o: pthread_frame.cpp /opt/Qt5.6.2/5.6/gcc_64/include/QtGui/QImage \
+pthread_frame.o: pthread_frame.cpp pthread_frame.h \
+		/opt/Qt5.6.2/5.6/gcc_64/include/QtGui/QImage \
 		/opt/Qt5.6.2/5.6/gcc_64/include/QtGui/qimage.h \
 		/opt/Qt5.6.2/5.6/gcc_64/include/QtGui/qcolor.h \
 		/opt/Qt5.6.2/5.6/gcc_64/include/QtGui/qrgb.h \
@@ -726,13 +731,17 @@ pthread_frame.o: pthread_frame.cpp /opt/Qt5.6.2/5.6/gcc_64/include/QtGui/QImage 
 		/usr/local/include/opencv2/videostab/deblurring.hpp \
 		/usr/local/include/opencv2/videostab/wobble_suppression.hpp \
 		/usr/local/include/opencv2/videostab/ring_buffer.hpp \
-		pthread_frame.h
+		network_init.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o pthread_frame.o pthread_frame.cpp
 
-pthread_xxx.o: pthread_xxx.cc /usr/local/include/wiringPi.h \
+pthread_xxx.o: pthread_xxx.cc pthread_xxx.h \
+		/usr/local/include/wiringPi.h \
 		/usr/local/include/wiringSerial.h \
-		pthread_xxx.h
+		network_init.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o pthread_xxx.o pthread_xxx.cc
+
+network_init.o: network_init.cc network_init.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o network_init.o network_init.cc
 
 tcpclient.o: tcpclient.cpp /usr/local/include/wiringPi.h \
 		/usr/local/include/wiringSerial.h \

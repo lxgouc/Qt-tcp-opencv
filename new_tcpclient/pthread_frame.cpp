@@ -1,3 +1,4 @@
+#include "pthread_frame.h"
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -10,13 +11,11 @@
 #include <QDataStream>
 #include <QBuffer>
 #include <opencv2/opencv.hpp>
-#include "pthread_frame.h"
+#include "network_init.h"
 
 using namespace cv;
 using namespace std;
 #define PORT 6666
-
-
 
 void getframe(int tcpsocket)
 {

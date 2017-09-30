@@ -7,8 +7,8 @@ TARGET = new_tcpclient
 INCLUDEPATH += .
 
 # Input
-HEADERS += pthread_frame.h pthread_xxx.h
-SOURCES += pthread_frame.cpp pthread_xxx.cc tcpclient.cpp
+HEADERS += pthread_frame.h pthread_xxx.h network_init.h
+SOURCES += pthread_frame.cpp pthread_xxx.cc network_init.cc tcpclient.cpp
 
 INCLUDEPATH +=  /usr/local/include/opencv \
 				/usr/local/include \
