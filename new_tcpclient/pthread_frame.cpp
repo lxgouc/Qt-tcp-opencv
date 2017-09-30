@@ -14,8 +14,9 @@
 
 using namespace cv;
 using namespace std;
+#define PORT 6666
 
-int network_init_frame(char *str, uint16_t port)
+int network_init(char *str, uint16_t port)
 {
 	struct sockaddr_in frameclient;
 	int tcpsocket;
@@ -84,4 +85,12 @@ void sendframe(vector<unsigned char> &tmpframe, const vector<unsigned char>::siz
 		perror("write frame error!\n");
 		exit(1);
 	}	
+}
+
+
+void *pthread_frame(void *arg)
+{
+	int tcpsocket=network_init((char*)arg,PORT);
+	getframe(tcpsocket);
+	pthread_exit(NULL);
 }

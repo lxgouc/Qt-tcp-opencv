@@ -13,39 +13,13 @@
 using namespace std;
 #define NUM 8
 
-int network_init_xxx(char *str, uint16_t port)
-{
-	struct sockaddr_in xxxclient;
-	int tcpsocket;
-	if((tcpsocket=socket(AF_INET,SOCK_STREAM,0))<0)
-	{
-		perror("create socket error!!!\n");
-		exit(1);
-	}
-	else
-		cout<<"create socket success!!!"<<endl;
-	bzero(&xxxclient,sizeof(xxxclient));
-	xxxclient.sin_family=AF_INET;
-	xxxclient.sin_port=htons(port);
-	xxxclient.sin_addr.s_addr=inet_addr(str);
-	if(connect(tcpsocket,(struct sockaddr*)(&xxxclient),sizeof(xxxclient))<0)
-	{
-		perror("connect error!!!\n");
-		exit(1);
-	}
-	else
-	{
-		cout<<"connect success!!!"<<endl;
-		return tcpsocket;
-	}
-}
 
-bool getarduinodata(int &serial, char *line)
+bool arduinotorpi(int &serial, char *line)
 {
   int len=0;
   if(serialDataAvail(serial))
   {
-    while(len<8)
+    while(len<NUM)
       len+=read(serial,line+len,NUM-len);
     return true;
   }
@@ -53,35 +27,19 @@ bool getarduinodata(int &serial, char *line)
     return false;
 }
 
-void sendarduinodata(int socket, const char* line)
+void rpitodeepin(int socket, const char* line)
 {
-    if((write(socket,line,NUM)==-1)
+    if((write(socket,line,NUM)==-1))
     {
     	perror("write error!!1\n");
     	exit(1);
     }
 }
 
-/*char deepintorpi(int socket)
-{   
-	char data[128];
-	int num;
-	if((num=read(socket,data,128))!=-1)
-	{
-		switch (data[0])
-		{
-			case '':
+void *deepintorpi(void *arg)
+{
 
-			case '':
-
-			case '':
-
-			case '':
-
-            default:
-		}
-	}
-}*/
+}
 
 void rpitoarduino()
 {

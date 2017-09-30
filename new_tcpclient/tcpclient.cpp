@@ -52,16 +52,10 @@ int main(int argc,  char *argv[])
     return 0;
 }
 
-void *pthread_frame(void *arg)
-{
-	int tcpsocket=network_init_frame((char*)arg,PORT);
-	getframe(tcpsocket);
-	pthread_exit(NULL);
-}
 
 void *pthread_xxx(void *arg)
 {
-	int tcpsocket=network_init_xxx((char*)arg,PORT1);
+	int tcpsocket=network_init((char*)arg,PORT1);
 	if(wiringPiSetup()<0)
 	{
 		perror("wiringPiSetup error!!!\n");
@@ -71,6 +65,12 @@ void *pthread_xxx(void *arg)
 	if((serial=serialOpen("/dev/ttyACM0",9600))<0)
 	{
 		perror("can`t find arduino!!!\n");
+		exit(1);
+	}
+	pthread_t rpithid;
+	if((pthread_create(&rpithid,NULL,deepintorpi,(void*)(&tcpsocket)))!=0)
+	{
+		perror("create deepintorpi thread error!\n");
 		exit(1);
 	}
 	while(1)
