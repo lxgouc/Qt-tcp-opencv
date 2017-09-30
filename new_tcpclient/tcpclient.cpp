@@ -13,8 +13,6 @@
 #include "pthread_xxx.h"
 
 using namespace std;
-#define PORT 6666
-#define PORT1 6667
 
 int main(int argc,  char *argv[])
 {
@@ -53,34 +51,4 @@ int main(int argc,  char *argv[])
 }
 
 
-void *pthread_xxx(void *arg)
-{
-	int tcpsocket=network_init((char*)arg,PORT1);
-	if(wiringPiSetup()<0)
-	{
-		perror("wiringPiSetup error!!!\n");
-		exit(1);
-	}
-	int serial;
-	if((serial=serialOpen("/dev/ttyACM0",9600))<0)
-	{
-		perror("can`t find arduino!!!\n");
-		exit(1);
-	}
-	pthread_t rpithid;
-	if((pthread_create(&rpithid,NULL,deepintorpi,(void*)(&tcpsocket)))!=0)
-	{
-		perror("create deepintorpi thread error!\n");
-		exit(1);
-	}
-	while(1)
-	{
-		char *line=(char*)malloc(128);
-		if(arduinotorpi(serial,line))
-		{
-			rpitodeepin(tcpsocket,line);
-		}
-		free(line);
-	}
-    pthread_exit(NULL);
-}
+
