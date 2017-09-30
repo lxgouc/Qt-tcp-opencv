@@ -5,10 +5,9 @@
 using namespace std;
 
 void *pthread_xxx(void *arg);
-bool arduinotorpi(int&, char*);
+bool rpifromarduino(int&, char*);
 void rpitodeepin(int, const char*);
-
-void *deepintorpi(void *arg);
-void rpitoarduino();
+void *rpifromdeepin(void *arg);
+void rpitoarduino(char*, int&);
 
 #endif

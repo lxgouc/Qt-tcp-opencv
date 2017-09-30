@@ -39,8 +39,8 @@ void getframe(int tcpsocket)
 			exit(1);
 		}
 		imencode(".jpg",frame,buff,param);
-		vector<unsigned char>::size_type size=buff.size();
-		sendframe(buff,size,tcpsocket);
+		//vector<unsigned char>::size_type size=buff.size();
+		sendframe(buff,buff.size(),tcpsocket);
 		//waitKey(33);        
 	}
 }

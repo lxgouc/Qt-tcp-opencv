@@ -46,6 +46,7 @@ int main(int argc,  char *argv[])
 		exit(1);
 	}
     cout<<"the thread_xxx thread id:"<<thid2<<endl;
+    pthread_attr_destroy(&attr);
     pthread_exit(NULL);
     return 0;
 }

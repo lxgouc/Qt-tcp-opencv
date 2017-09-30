@@ -15,7 +15,7 @@ using namespace std;
 #define NUM 8
 #define PORT1 6668
 
-bool arduinotorpi(int &serial, char *line)
+bool rpifromarduino(int &serial, char *line)
 {
   int len=0;
   if(serialDataAvail(serial))
@@ -32,19 +32,29 @@ void rpitodeepin(int socket, const char* line)
 {
     if((write(socket,line,NUM)==-1))
     {
-    	perror("write error!!1\n");
+    	perror("write data to deepin error!!1\n");
     	exit(1);
     }
 }
 
-void *deepintorpi(void *arg)
+void *rpifromdeepin(void *arg)
 {
-
+    int *fildes=(int*)arg;
+    int len=0;
+    char line[8];
+    while(1)
+    {
+      while(len<8)
+        len+=read(fildes[0],&line[len],8-len);
+      rpitoarduino(line,fildes[1]);
+      len=0;
+      bzero(line,8);
+    }
 }
 
-void rpitoarduino()
+void rpitoarduino(char *line, int &serial)
 {
-
+    read(serial,line,8);
 }
 
 void *pthread_xxx(void *arg)
@@ -62,19 +72,20 @@ void *pthread_xxx(void *arg)
     exit(1);
   }
   pthread_t rpithid;
-  if((pthread_create(&rpithid,NULL,deepintorpi,(void*)(&tcpsocket)))!=0)
+  int fildes[2]={tcpsocket,serial};
+  if((pthread_create(&rpithid,NULL,rpifromdeepin,(void*)fildes))!=0)
   {
     perror("create deepintorpi thread error!\n");
     exit(1);
   }
+  char line[128];
   while(1)
-  {
-    char *line=(char*)malloc(128);
-    if(arduinotorpi(serial,line))
+  {  
+    if(rpifromarduino(serial,line))
     {
       rpitodeepin(tcpsocket,line);
+      bzero(line,128);
     }
-    free(line);
   }
     pthread_exit(NULL);
 }
