@@ -24,8 +24,8 @@ void NewQLabel::mouseMoveEvent(QMouseEvent *event)
         endpoint=event->pos();
         update();
         selection &= Rect(0, 0, this->width(), this->height());
-        selection.x+=1;
-        selection.y+=11;
+        //selection.x+=1;
+        //selection.y+=11;
         emit sendrect(selection);
     }
 }

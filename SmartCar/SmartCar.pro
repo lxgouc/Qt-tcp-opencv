@@ -16,10 +16,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         widget.cpp \
-    newqlabel.cpp
+    newqlabel.cpp \
+    worker.cpp
 
 HEADERS  += widget.h \
-    newqlabel.h
+    newqlabel.h \
+    worker.h
 
 FORMS    += widget.ui
 

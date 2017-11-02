@@ -35,6 +35,10 @@ public:
 signals:
     void sendframedata();
 
+    void dirsignal(QString, int);
+
+    //void autodrisignal();
+
 public slots:
     void getrect(Rect);
 
@@ -58,6 +62,20 @@ private slots:
 
     void on_facedetect_clicked();
 
+    void threadinit();
+
+    void on_UpButton_clicked();
+
+    void on_LeftButton_clicked();
+
+    void on_RightButton_clicked();
+
+    void on_DownButton_clicked();
+
+    void on_AutoDrive_clicked();
+
+    void poscal();
+
 private:
     Ui::Widget *ui;
     QTimer *timer;
@@ -66,6 +84,7 @@ private:
     QByteArray data;
     QTcpServer *tcpserver;
     QTcpSocket *tcpsocket;
+    QThread workthread;
     //qint64 bytesleft;
     //qint64 cache;
     //qint64 framesize;
@@ -77,6 +96,7 @@ private:
     Rect trackWindow;
     Mat hsv, hue, mask, hist, histimg = Mat::zeros(200, 320, CV_8UC3), backproj;
     bool selectObject;
+    bool autotrack;
     char selthm;
     int trackObject;
     CascadeClassifier cascade, nestedCascade;

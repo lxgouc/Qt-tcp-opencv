@@ -1,5 +1,6 @@
 #include "widget.h"
 #include "ui_widget.h"
+#include "worker.h"
 #include <QDebug>
 #include <QPainter>
 #include <vector>
@@ -15,17 +16,29 @@ Widget::Widget(QWidget *parent) :
     timer=new QTimer(this);
     tcpserver=new QTcpServer(this);
     selectObject=false;
+    autotrack=false;
     selthm='o';
     trackObject=0;
     //receivedbytes=0;
     //framesize=0;
     connect(tcpserver,SIGNAL(newConnection()),this,SLOT(acceptconnection()));
     connect(ui->SwitchButton,SIGNAL(clicked()),this,SLOT(opencamara()));
+    threadinit();
 }
 
 Widget::~Widget()
 {
     delete ui;
+}
+
+void Widget::threadinit()
+{
+    Worker *mythread=new Worker;
+    mythread->moveToThread(&workthread);
+    connect(&workthread,SIGNAL(started()),mythread,SLOT(deleteLater()));
+    connect(&workthread,SIGNAL(finished()),mythread,SLOT(netinit()));
+    connect(this,SIGNAL(dirsignal(QString,int)),mythread,SLOT(dirdata(QString,int)));
+    //connect(this,SIGNAL(drisignal()),mythread,SLOT(autodridata()));
 }
 
 void Widget::opencamara()
@@ -37,6 +50,7 @@ void Widget::opencamara()
             qDebug()<<"listening failuture!!!!";
             exit(1);
         }
+       workthread.start();
        ui->SwitchButton->setText("OFF");
        selthm='o';
     }
@@ -46,6 +60,7 @@ void Widget::opencamara()
             tcpserver->close();
         else
             tcpsocket->disconnectFromHost();
+        workthread.quit();
         secframebytes.resize(0);
         //framesize=0;
         ui->SwitchButton->setText("ON");
@@ -201,6 +216,37 @@ void Widget::on_facedetect_clicked()
         selthm='o';
 }
 
+void Widget::on_UpButton_clicked()
+{
+    emit dirsignal("up",000);
+}
+
+void Widget::on_LeftButton_clicked()
+{
+    emit dirsignal("up",000);
+}
+
+void Widget::on_RightButton_clicked()
+{
+    emit dirsignal("up",000);
+}
+
+void Widget::on_DownButton_clicked()
+{
+    emit dirsignal("up",000);
+}
+
+void Widget::on_AutoDrive_clicked()
+{
+    autotrack=!autotrack;
+}
+
+void Widget::poscal()
+{
+    /*
+     * */
+    //emit drisignal();
+}
 
 void Widget::camshiftalgorithm(Mat &image)
 {
@@ -385,5 +431,9 @@ QImage Widget::MatToQImage(const Mat &mat)
         return QImage();
     }
 }
+
+
+
+
 
 
