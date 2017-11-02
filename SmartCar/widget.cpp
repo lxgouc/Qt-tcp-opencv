@@ -39,6 +39,7 @@ void Widget::threadinit()
     connect(&workthread,SIGNAL(finished()),mythread,SLOT(netinit()));
     connect(this,SIGNAL(dirsignal(QString,int)),mythread,SLOT(dirdata(QString,int)));
     //connect(this,SIGNAL(drisignal()),mythread,SLOT(autodridata()));
+    //connect(mythread,SIGNAL(rpidata(xxx)),this,SLOT(displayrpidata(xxx)));
 }
 
 void Widget::opencamara()
@@ -50,7 +51,7 @@ void Widget::opencamara()
             qDebug()<<"listening failuture!!!!";
             exit(1);
         }
-       workthread.start();
+       //workthread.start();
        ui->SwitchButton->setText("OFF");
        selthm='o';
     }
@@ -60,7 +61,7 @@ void Widget::opencamara()
             tcpserver->close();
         else
             tcpsocket->disconnectFromHost();
-        workthread.quit();
+        //workthread.quit();
         secframebytes.resize(0);
         //framesize=0;
         ui->SwitchButton->setText("ON");
@@ -72,6 +73,7 @@ void Widget::acceptconnection()
 {
     tcpsocket=tcpserver->nextPendingConnection();
     connect(tcpsocket,SIGNAL(readyRead()),this,SLOT(getframe()));
+    connect(this,SIGNAL(readytoshow()),this,SLOT(showframe()),Qt::QueuedConnection);
     connect(tcpsocket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(displayerror(QAbstractSocket::SocketError)));
     tcpserver->close();
 
@@ -136,20 +138,44 @@ void Widget::getframe()
 
     if(num<=(unsigned)secframebytes.size())
     {
-        QByteArray data(secframebytes.mid(0,num));
+        //QByteArray data(secframebytes.mid(0,num));
+        imagedata=secframebytes.mid(0,num);
         secframebytes.remove(0,num);
         hashead=true;
         num=0;
-        showframe(data);
+        //showframe(data);
+        emit readytoshow();
     }
     else
         return;
 }
 
-void Widget::showframe(QByteArray &frameval)
+/*void Widget::showframe(QByteArray &frameval)
 {
     unsigned char *strframe=(unsigned char*)(frameval.data());
     vector<unsigned char>::size_type strsize=frameval.size();
+    vector<unsigned char>buffer(strframe,strframe+strsize);
+    Mat frame=imdecode(buffer,CV_LOAD_IMAGE_COLOR);
+    switch (selthm)
+    {
+    case 'c':
+        camshiftalgorithm(frame);
+        break;
+    case 'f':
+        detectAndDraw( frame, cascade, nestedCascade, 2, false );
+    default:
+        break;
+    }
+    //QImage image=MatToQImage(frame);
+    cvtColor(frame,frame,CV_BGR2RGB);
+    QImage image((const uchar*)frame.data,frame.cols,frame.rows,QImage::Format_RGB888);
+    ui->Video->setPixmap(QPixmap::fromImage(image));
+}*/
+
+void Widget::showframe()
+{
+    unsigned char *strframe=(unsigned char*)(imagedata.data());
+    vector<unsigned char>::size_type strsize=imagedata.size();
     vector<unsigned char>buffer(strframe,strframe+strsize);
     Mat frame=imdecode(buffer,CV_LOAD_IMAGE_COLOR);
     switch (selthm)

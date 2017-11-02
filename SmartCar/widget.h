@@ -33,7 +33,7 @@ public:
     void detectAndDraw( Mat& img, CascadeClassifier& cascade,CascadeClassifier& nestedCascade,double scale, bool tryflip );
 
 signals:
-    void sendframedata();
+    void readytoshow();
 
     void dirsignal(QString, int);
 
@@ -50,7 +50,9 @@ protected:
 private slots:
     void opencamara();
 
-    void showframe(QByteArray&);
+    //void showframe(QByteArray&);
+
+    void showframe();
 
     void acceptconnection();
 
@@ -76,12 +78,14 @@ private slots:
 
     void poscal();
 
+    //void displayrpidata(xxx);
+
 private:
     Ui::Widget *ui;
     QTimer *timer;
     VideoCapture cam;
     Mat frame;
-    QByteArray data;
+    QByteArray imagedata;
     QTcpServer *tcpserver;
     QTcpSocket *tcpsocket;
     QThread workthread;
