@@ -19,7 +19,7 @@ void Worker::netinit()
 void Worker::acceptconnection()
 {
     qDebug()<<"connection success!!!";
-    QTcpSocket *tcpsocket=subtcpserver.nextPendingConnection();
+    tcpsocket=subtcpserver.nextPendingConnection();
     connect(tcpsocket,SIGNAL(readyRead()),this,SLOT(deepinfromrpi()));
 }
 

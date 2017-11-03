@@ -10,8 +10,6 @@ class Worker : public QObject
 public:
     explicit Worker(QObject *parent = 0);
 
-    QTcpServer subtcpserver;
-
 signals:
     //void rpidata(xxx);
 
@@ -27,6 +25,11 @@ public slots:
     void dirdata(QString, int);
 
     //void autodridata();
+
+private:
+    QTcpServer subtcpserver;
+    QTcpSocket *tcpsocket;
+
 };
 
 #endif // WORKER_H
