@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include <QImage>
-#include <QTimer>
 #include <QPixmap>
 #include <QtNetwork>
 #include <opencv2/opencv.hpp>
@@ -78,9 +77,6 @@ private slots:
 
 private:
     Ui::Widget *ui;
-    QTimer *timer;
-    VideoCapture cam;
-    Mat frame;
     QByteArray imagedata;
     QTcpServer *tcpserver;
     QTcpSocket *tcpsocket;
@@ -91,7 +87,6 @@ private:
     //qint64 receivedbytes;
     QByteArray secframebytes;
     //QByteArray secframehead;
-    QImage image;
     Rect selection;
     Rect trackWindow;
     Mat hsv, hue, mask, hist, histimg = Mat::zeros(200, 320, CV_8UC3), backproj;

@@ -13,7 +13,6 @@ Widget::Widget(QWidget *parent) :
     ui(new Ui::Widget)
 {
     ui->setupUi(this);
-    timer=new QTimer(this);
     tcpserver=new QTcpServer(this);
     selectObject=false;
     autotrack=false;
