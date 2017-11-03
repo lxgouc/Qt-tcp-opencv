@@ -13,14 +13,13 @@ Widget::Widget(QWidget *parent) :
     ui(new Ui::Widget)
 {
     ui->setupUi(this);
-    tcpserver=new QTcpServer(this);
     selectObject=false;
     autotrack=false;
     selthm='o';
     trackObject=0;
     //receivedbytes=0;
     //framesize=0;
-    connect(tcpserver,SIGNAL(newConnection()),this,SLOT(acceptconnection()));
+    connect(&tcpserver,SIGNAL(newConnection()),this,SLOT(acceptconnection()));
     connect(ui->SwitchButton,SIGNAL(clicked()),this,SLOT(opencamara()));
     threadinit();
 }
@@ -45,7 +44,7 @@ void Widget::opencamara()
 {
     if(ui->SwitchButton->text()=="ON")
     {
-        if(!tcpserver->listen(QHostAddress::Any,6666))
+        if(!tcpserver.listen(QHostAddress::Any,6666))
         {
             qDebug()<<"listening failuture!!!!";
             exit(1);
@@ -56,8 +55,8 @@ void Widget::opencamara()
     }
     else
     {
-        if(tcpserver->isListening())
-            tcpserver->close();
+        if(tcpserver.isListening())
+            tcpserver.close();
         else
             tcpsocket->disconnectFromHost();
         //workthread.quit();
@@ -70,10 +69,10 @@ void Widget::opencamara()
 
 void Widget::acceptconnection()
 {
-    tcpsocket=tcpserver->nextPendingConnection();
+    tcpsocket=tcpserver.nextPendingConnection();
     connect(tcpsocket,SIGNAL(readyRead()),this,SLOT(getframe()));
     connect(tcpsocket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(displayerror(QAbstractSocket::SocketError)));
-    tcpserver->close();
+    tcpserver.close();
 
 }
 

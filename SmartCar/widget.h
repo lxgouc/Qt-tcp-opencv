@@ -77,8 +77,7 @@ private slots:
 
 private:
     Ui::Widget *ui;
-    QByteArray imagedata;
-    QTcpServer *tcpserver;
+    QTcpServer tcpserver;
     QTcpSocket *tcpsocket;
     QThread workthread;
     //qint64 bytesleft;

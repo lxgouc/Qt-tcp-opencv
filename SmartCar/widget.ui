@@ -110,9 +110,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_6">
+         <widget class="QPushButton" name="AutoDrive">
           <property name="text">
-           <string>PushButton</string>
+           <string>AutoTrack</string>
           </property>
          </widget>
         </item>

@@ -10,9 +10,10 @@ class Worker : public QObject
 public:
     explicit Worker(QObject *parent = 0);
 
-    QTcpServer *subtcpserver;
+    QTcpServer subtcpserver;
 
 signals:
+    //void rpidata(xxx);
 
 public slots:
     void netinit();
