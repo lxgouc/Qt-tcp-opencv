@@ -33,8 +33,6 @@ public:
     void detectAndDraw( Mat& img, CascadeClassifier& cascade,CascadeClassifier& nestedCascade,double scale, bool tryflip );
 
 signals:
-    void readytoshow();
-
     void dirsignal(QString, int);
 
     //void autodrisignal();
@@ -50,9 +48,7 @@ protected:
 private slots:
     void opencamara();
 
-    //void showframe(QByteArray&);
-
-    void showframe();
+    void showframe(QByteArray&);
 
     void acceptconnection();
 
