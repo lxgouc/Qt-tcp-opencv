@@ -35,7 +35,7 @@ void Widget::threadinit()
     mythread->moveToThread(&workthread);
     connect(&workthread,SIGNAL(started()),mythread,SLOT(deleteLater()));
     connect(&workthread,SIGNAL(finished()),mythread,SLOT(netinit()));
-    connect(this,SIGNAL(drivesignal(QString,int)),mythread,SLOT(drivedata(QString,int)));
+    connect(this,SIGNAL(drivesignal(const char*,int)),mythread,SLOT(deepintorpi(const char*,int)));
     //connect(mythread,SIGNAL(rpidata(xxx)),this,SLOT(displayrpidata(xxx)));
 }
 
@@ -276,6 +276,7 @@ void Widget::poscal(RotatedRect &rotatedrect)
             sigint=111;
             break;
         }
+        qDebug()<<"lxg";
         emit drivesignal("autol",sigint);
     }
     else
@@ -331,7 +332,8 @@ void Widget::camshiftalgorithm(Mat &image)
                                trackWindow.x + r, trackWindow.y + r) &
                           Rect(0, 0, cols, rows);
         }
-
+        if(autotrack && selthm=='c')
+            poscal(trackBox);
         ellipse( image, trackBox, Scalar(0,0,255), 3, LINE_AA );
     }
 

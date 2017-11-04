@@ -6,6 +6,11 @@ Worker::Worker(QObject *parent) : QObject(parent)
 
 }
 
+Worker::~Worker()
+{
+
+}
+
 void Worker::netinit()
 {
     if(!subtcpserver.listen(QHostAddress::Any,6668))
@@ -25,17 +30,18 @@ void Worker::acceptconnection()
 
 void Worker::deepinfromrpi()
 {
-    /*
-     */
+    rpidata.append(tcpsocket->readAll());
+    secdata=rpidata.left(000);
+    rpidata.remove(0,000);
+
     //emit rpidata(xxx);
 }
 
-void Worker::deepintorpi()
+
+void Worker::deepintorpi(const char *direction, int value)
 {
-
-}
-
-void Worker::drivedata(QString direction, int value)
-{
-
+    drivevalue.str=direction;
+    drivevalue.val=value;
+    if((tcpsocket->write((const char*)(&drivevalue),sizeof(struct Drivedata)))==-1)
+        qDebug()<<"write drivedata error";
 }
