@@ -35,12 +35,7 @@ void Worker::deepintorpi()
 
 }
 
-void Worker::dirdata(QString direction, int value)
+void Worker::drivedata(QString direction, int value)
 {
 
 }
-
-/*void Worker::autodridata()
-{
-
-}*/

@@ -35,8 +35,7 @@ void Widget::threadinit()
     mythread->moveToThread(&workthread);
     connect(&workthread,SIGNAL(started()),mythread,SLOT(deleteLater()));
     connect(&workthread,SIGNAL(finished()),mythread,SLOT(netinit()));
-    connect(this,SIGNAL(dirsignal(QString,int)),mythread,SLOT(dirdata(QString,int)));
-    //connect(this,SIGNAL(drisignal()),mythread,SLOT(autodridata()));
+    connect(this,SIGNAL(drivesignal(QString,int)),mythread,SLOT(drivedata(QString,int)));
     //connect(mythread,SIGNAL(rpidata(xxx)),this,SLOT(displayrpidata(xxx)));
 }
 
@@ -218,22 +217,22 @@ void Widget::on_facedetect_clicked()
 
 void Widget::on_UpButton_clicked()
 {
-    emit dirsignal("up",000);
+    emit drivesignal("up",000);
 }
 
 void Widget::on_LeftButton_clicked()
 {
-    emit dirsignal("up",000);
+    emit drivesignal("up",000);
 }
 
 void Widget::on_RightButton_clicked()
 {
-    emit dirsignal("up",000);
+    emit drivesignal("up",000);
 }
 
 void Widget::on_DownButton_clicked()
 {
-    emit dirsignal("up",000);
+    emit drivesignal("up",000);
 }
 
 void Widget::on_AutoDrive_clicked()
@@ -241,11 +240,59 @@ void Widget::on_AutoDrive_clicked()
     autotrack=!autotrack;
 }
 
-void Widget::poscal()
+void Widget::poscal(RotatedRect &rotatedrect)
 {
-    /*
-     * */
-    //emit drisignal();
+    static int prex;
+    int nowx=rotatedrect.center.x;
+    int diff=nowx-prex;
+    int sigint;
+    if(nowx<310)
+    {
+        switch(errorvalue(qAbs(diff)))
+        {
+        case 'a':
+            sigint=000;
+            break;
+        case 'b':
+            sigint=000;
+            break;
+        case 'c':
+            sigint=000;
+            break;
+        }
+        emit drivesignal("autor",sigint);
+    }
+    else if(nowx>330)
+    {
+        switch(errorvalue(qAbs(diff)))
+        {
+        case 'a':
+            sigint=111;
+            break;
+        case 'b':
+            sigint=111;
+            break;
+        case 'c':
+            sigint=111;
+            break;
+        }
+        emit drivesignal("autol",sigint);
+    }
+    else
+    {
+
+    }
+    prex=nowx;
+}
+
+char Widget::errorvalue(const int &errorvalue)
+{
+    if(errorvalue>0 && errorvalue<10)
+        return 'a';
+    else if(errorvalue>10 && errorvalue<30)
+        return 'b';
+    else
+        return 'c';
 }
 
 void Widget::camshiftalgorithm(Mat &image)

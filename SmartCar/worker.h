@@ -22,9 +22,7 @@ public slots:
 
     void deepintorpi();
 
-    void dirdata(QString, int);
-
-    //void autodridata();
+    void drivedata(QString, int);
 
 private:
     QTcpServer subtcpserver;
