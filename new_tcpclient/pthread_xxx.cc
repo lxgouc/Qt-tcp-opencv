@@ -13,7 +13,6 @@
 
 using namespace std;
 #define NUM 8
-#define SIZE 8
 #define PORT1 6668
 struct Drivedata
 {
