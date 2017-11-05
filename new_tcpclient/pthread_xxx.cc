@@ -13,7 +13,13 @@
 
 using namespace std;
 #define NUM 8
+#define SIZE 8
 #define PORT1 6668
+struct Drivedata
+{
+  const char *direction=NULL;
+  const char *speedval=NULL;
+};
 
 bool rpifromarduino(int &serial, char *line)
 {
@@ -41,11 +47,11 @@ void *rpifromdeepin(void *arg)
 {
     int *fildes=(int*)arg;
     int len=0;
-    char line[8];
+    char line[SIZE];
     while(1)
     {
       while(len<8)
-        len+=read(fildes[0],&line[len],8-len);
+        len+=read(fildes[0],&line[len],SIZE-len);
       rpitoarduino(line,fildes[1]);
       len=0;
       bzero(line,8);
@@ -54,7 +60,18 @@ void *rpifromdeepin(void *arg)
 
 void rpitoarduino(char *line, int &serial)
 {
-    read(serial,line,8);
+    Drivedata *drivevalue=(struct Drivedata*)line;
+    char ret[2];
+    ret[0]=drivevalue->direction[0];
+    ret[1]=drivevalue->speedval[0];
+    for(int i=0; i<2; i++)
+    {
+      if((write(serial,&ret[i],sizeof(char)))==-1)
+      {
+        perror("write data to arduino error\n");
+        exit(1);
+      }
+    }
 }
 
 void *pthread_xxx(void *arg)
