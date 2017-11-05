@@ -32,7 +32,7 @@ public:
     void detectAndDraw( Mat& img, CascadeClassifier& cascade,CascadeClassifier& nestedCascade,double scale, bool tryflip );
 
 signals:
-    void drivesignal(const char*, int);
+    void drivesignal(const char*, const char*);
 
 public slots:
     void getrect(Rect);

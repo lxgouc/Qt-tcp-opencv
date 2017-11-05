@@ -38,10 +38,10 @@ void Worker::deepinfromrpi()
 }
 
 
-void Worker::deepintorpi(const char *direction, int value)
+void Worker::deepintorpi(const char *direction, const char *speedval)
 {
-    drivevalue.str=direction;
-    drivevalue.val=value;
+    drivevalue.direction=direction;
+    drivevalue.speedval=speedval;
     if((tcpsocket->write((const char*)(&drivevalue),sizeof(struct Drivedata)))==-1)
         qDebug()<<"write drivedata error";
 }

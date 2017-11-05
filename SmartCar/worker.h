@@ -6,8 +6,8 @@
 
 struct Drivedata
 {
-    const char *str=NULL;
-    int val;
+    const char *direction=NULL;
+    const char *speedval=NULL;
 };
 
 class Worker : public QObject
@@ -28,7 +28,7 @@ public slots:
 
     void deepinfromrpi();
 
-    void deepintorpi(const char*, int);
+    void deepintorpi(const char*, const char*);
 
 private:
     QTcpServer subtcpserver;

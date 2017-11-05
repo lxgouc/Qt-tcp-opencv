@@ -35,7 +35,7 @@ void Widget::threadinit()
     mythread->moveToThread(&workthread);
     connect(&workthread,SIGNAL(started()),mythread,SLOT(deleteLater()));
     connect(&workthread,SIGNAL(finished()),mythread,SLOT(netinit()));
-    connect(this,SIGNAL(drivesignal(const char*,int)),mythread,SLOT(deepintorpi(const char*,int)));
+    connect(this,SIGNAL(drivesignal(const char*,const char*)),mythread,SLOT(deepintorpi(const char*,const char*)));
     //connect(mythread,SIGNAL(rpidata(xxx)),this,SLOT(displayrpidata(xxx)));
 }
 
@@ -217,22 +217,22 @@ void Widget::on_facedetect_clicked()
 
 void Widget::on_UpButton_clicked()
 {
-    emit drivesignal("up",000);
+    emit drivesignal("UP","low");
 }
 
 void Widget::on_LeftButton_clicked()
 {
-    emit drivesignal("up",000);
+    emit drivesignal("Left","low");
 }
 
 void Widget::on_RightButton_clicked()
 {
-    emit drivesignal("up",000);
+    emit drivesignal("Right","low");
 }
 
 void Widget::on_DownButton_clicked()
 {
-    emit drivesignal("up",000);
+    emit drivesignal("Down","low");
 }
 
 void Widget::on_AutoDrive_clicked()
@@ -245,39 +245,43 @@ void Widget::poscal(RotatedRect &rotatedrect)
     static int prex;
     int nowx=rotatedrect.center.x;
     int diff=nowx-prex;
-    int sigint;
+    const char *sigint=NULL;
     if(nowx<310)
     {
         switch(errorvalue(qAbs(diff)))
         {
-        case 'a':
-            sigint=000;
+        case 'l':
+            sigint="low";
             break;
-        case 'b':
-            sigint=000;
+        case 'm':
+            sigint="medium";
             break;
-        case 'c':
-            sigint=000;
+        case 'h':
+            sigint="high";
+            break;
+        default:
             break;
         }
-        emit drivesignal("autor",sigint);
+        emit drivesignal("Rauto",sigint);
     }
     else if(nowx>330)
     {
         switch(errorvalue(qAbs(diff)))
         {
-        case 'a':
-            sigint=111;
+        case 'l':
+            sigint="low";
             break;
-        case 'b':
-            sigint=111;
+        case 'm':
+            sigint="medium";
             break;
-        case 'c':
-            sigint=111;
+        case 'h':
+            sigint="high";
+            break;
+        default:
             break;
         }
         qDebug()<<"lxg";
-        emit drivesignal("autol",sigint);
+        emit drivesignal("Lauto",sigint);
     }
     else
     {
@@ -289,11 +293,11 @@ void Widget::poscal(RotatedRect &rotatedrect)
 char Widget::errorvalue(const int &errorvalue)
 {
     if(errorvalue>0 && errorvalue<10)
-        return 'a';
+        return 'l';
     else if(errorvalue>10 && errorvalue<30)
-        return 'b';
+        return 'm';
     else
-        return 'c';
+        return 'h';
 }
 
 void Widget::camshiftalgorithm(Mat &image)
