@@ -253,8 +253,20 @@ void Widget::poscal(RotatedRect &rotatedrect)
         case 'l':
             sigint="low";
             break;
-        case 'm':
-            sigint="medium";
+        case 'h':
+            sigint="high";
+            break;
+        default:
+            break;
+        }
+        emit drivesignal("Lauto",sigint);
+    }
+    else if(nowx>330)
+    {
+        switch(errorvalue(diff))
+        {
+        case 'l':
+            sigint="low";
             break;
         case 'h':
             sigint="high";
@@ -264,38 +276,15 @@ void Widget::poscal(RotatedRect &rotatedrect)
         }
         emit drivesignal("Rauto",sigint);
     }
-    else if(nowx>330)
-    {
-        switch(errorvalue(qAbs(diff)))
-        {
-        case 'l':
-            sigint="low";
-            break;
-        case 'm':
-            sigint="medium";
-            break;
-        case 'h':
-            sigint="high";
-            break;
-        default:
-            break;
-        }
-        qDebug()<<"lxg";
-        emit drivesignal("Lauto",sigint);
-    }
     else
-    {
-
-    }
+        emit drivesignal("Fauto","low");
     prex=nowx;
 }
 
 char Widget::errorvalue(const int &errorvalue)
 {
-    if(errorvalue>0 && errorvalue<10)
+    if(errorvalue<20)
         return 'l';
-    else if(errorvalue>10 && errorvalue<30)
-        return 'm';
     else
         return 'h';
 }
