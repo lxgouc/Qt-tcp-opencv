@@ -1,17 +1,15 @@
 #include <PID_v1.h>
 
-#define pinA A1
-#define INTA 2
-#define INTB 3
-
 const int EA=9;
 const int EB=10;
 const int pinLa=7;
 const int pinLb=8;
 const int pinRa=12;
 const int pinRb=13;
+const int trigpin=4;
+const int echopin=5;
 
-double SetpointL, SetpointR;
+double SetpointL=10, SetpointR=10;
 double Kp=0.6, Ki=5, Kd=0;
 double outputL, outputR;
 double inputL, inputR, speedvalueL, speedvalueR;
@@ -21,24 +19,41 @@ PID pidL(&inputL,&outputL,&SetpointL,Kp,Ki,Kd,DIRECT);
 PID pidR(&inputR,&outputR,&SetpointR,Kp,Ki,Kd,DIRECT);
 
 void setup() {
-  pinMode(INTA,INPUT);
-  pinMode(INTB,INPUT);
-
+  pinMode(trigpin,OUTPUT);
+  pinMode(echopin,INPUT);
+  
   initleftwheel();
   initrightwheel();
   
   attachInterrupt(0,wheelspeedL,CHANGE);
   attachInterrupt(1,wheelspeedR,CHANGE);
 
-  Serial.begin(9600);
+  Serial.begin(19200);
 }
 
 void loop() {
   char key[2];
   if(Serial.available()>0)
   {   
-      Serial.readBytes(key,sizeof(key)); 
+      Serial.readBytes(key,sizeof(key));
   }
+  else 
+    return;
+
+  switch(key[1])
+  {
+    case 'l':
+      SetpointL=10;
+      SetpointR=10;
+      break;
+    case 'h':
+      SetpointL=15;
+      SetpointR=15;
+      break;
+    default:
+      break;
+  }
+  
   switch(key[0])
   {
     case 'L':
@@ -47,34 +62,24 @@ void loop() {
     case 'R':
       right();
       break;
+    case 'F':
+      forbac();
+      break;
+    case 'B':
+      back();
+      break;
     default:
       break; 
   }
 
-  switch(key[1])
-  {
-    case 'l':
-      SetpointL=000;
-      SetpointR=000;
-      break;
-    case 'm':
-      SetpointL=000;
-      SetpointR=000;
-      break;
-    case 'h':
-      SetpointL=000;
-      SetpointR=000;
-      break;
-    default:
-      break;
-  }
   inputL=abs(speedvalueL);
   inputR=abs(speedvalueR);
 
-  if(pidL.Compute() && pidR.Compute())
-  {
-    speedvalueL=speedvalueR=0;
-  }
+  if(pidL.Compute())
+    speedvalueL=0;
+  if(pidR.Compute())
+    speedvalueR=0;
+
 }
 
 void initleftwheel()
@@ -83,7 +88,7 @@ void initleftwheel()
   pinMode(pinLa,OUTPUT);
   pinMode(pinLb,OUTPUT);
   pidL.SetMode(AUTOMATIC);
-  pidL.SetSampleTime(100);
+  pidL.SetSampleTime(40);
 }
 
 void initrightwheel()
@@ -92,7 +97,7 @@ void initrightwheel()
   pinMode(pinRa,OUTPUT);
   pinMode(pinRb,OUTPUT);
   pidR.SetMode(AUTOMATIC);
-  pidR.SetSampleTime(100);
+  pidR.SetSampleTime(40);
 }
 
 void wheelspeedL()
@@ -135,6 +140,23 @@ void wheelspeedR()
   DirectionlastR=DirectionR;
 }
 
+void forbac()
+{
+  digitalWrite(trigpin,LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigpin,HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigpin,LOW);
+
+  float cm=pulseIn(echopin,HIGH);
+  cm=(int(cm*100.0))/100.0;
+  if(cm>25)
+    forward();
+  else if(cm<20)
+    back();
+  else 
+    stopfb();
+}
 void forward()
 {
   digitalWrite(pinLa,HIGH);
@@ -183,7 +205,7 @@ void right()
   analogWrite(EB,outputR);
 }
 
-void stop()
+void stopfb()
 {
   analogWrite(EA,LOW);
   analogWrite(EB,LOW);
