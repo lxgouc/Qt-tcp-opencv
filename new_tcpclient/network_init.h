@@ -2,7 +2,7 @@
 #define NETWORK_INIT_H
 
 #include <arpa/inet.h>
-int network_init(char*, uint16_t);
+int network_init(const char*, uint16_t);
 
 #endif
 

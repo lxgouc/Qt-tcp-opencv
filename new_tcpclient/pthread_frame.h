@@ -8,6 +8,6 @@ using namespace std;
 class QByteArray;
 void *pthread_frame(void *arg);
 void getframe(int);
-void sendframe(vector<unsigned char>&, const vector<unsigned char>::size_type&, const int&);
+void sendframe(vector<unsigned char>&, const long long&, const int&);
 
 #endif

@@ -45,12 +45,12 @@ void getframe(int tcpsocket)
 	}
 }
 
-void sendframe(vector<unsigned char> &tmpframe, const vector<unsigned char>::size_type &size, const int &tcpsocket)
+void sendframe(vector<unsigned char> &tmpframe, const long long &size, const int &tcpsocket)
 {
 	int num;
     if((num=write(tcpsocket,&size,sizeof(size))<0))
     {
-		perror("write error!!!");
+		perror("write error!!!\n");
 		exit(1);
 	}
 	int val;
@@ -64,7 +64,7 @@ void sendframe(vector<unsigned char> &tmpframe, const vector<unsigned char>::siz
 
 void *pthread_frame(void *arg)
 {
-	int tcpsocket=network_init((char*)arg,PORT);
+	int tcpsocket=network_init((const char*)arg,PORT);
 	getframe(tcpsocket);
 	pthread_exit(NULL);
 }
