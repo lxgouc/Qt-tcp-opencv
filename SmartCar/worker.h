@@ -4,12 +4,6 @@
 #include <QObject>
 #include <QtNetwork>
 
-struct Drivedata
-{
-    const char *direction=NULL;
-    const char *speedval=NULL;
-};
-
 class Worker : public QObject
 {
     Q_OBJECT
@@ -30,10 +24,11 @@ public slots:
 
     void deepintorpi(const char*, const char*);
 
+    void displayerror(QAbstractSocket::SocketError);
+
 private:
-    QTcpServer subtcpserver;
+    QTcpServer *tcpserver;
     QTcpSocket *tcpsocket;
-    Drivedata drivevalue;
     QByteArray rpidata,secdata;
 
 };

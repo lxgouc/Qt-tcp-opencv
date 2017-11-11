@@ -24,7 +24,6 @@ class Widget : public QWidget
 public:
     explicit Widget(QWidget *parent = 0);
     ~Widget();
-
     QImage MatToQImage(const Mat &mat);
 
     void camshiftalgorithm(Mat &image);
@@ -40,7 +39,6 @@ public slots:
     void getcompletionsign(int);
 
 protected:
-
 
 private slots:
     void opencamara();

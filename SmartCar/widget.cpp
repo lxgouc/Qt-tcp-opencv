@@ -33,8 +33,8 @@ void Widget::threadinit()
 {
     Worker *mythread=new Worker;
     mythread->moveToThread(&workthread);
-    connect(&workthread,SIGNAL(started()),mythread,SLOT(deleteLater()));
-    connect(&workthread,SIGNAL(finished()),mythread,SLOT(netinit()));
+    connect(&workthread,SIGNAL(started()),mythread,SLOT(netinit()));
+    connect(&workthread,SIGNAL(finished()),mythread,SLOT(deleteLater()));
     connect(this,SIGNAL(drivesignal(const char*,const char*)),mythread,SLOT(deepintorpi(const char*,const char*)));
     //connect(mythread,SIGNAL(rpidata(xxx)),this,SLOT(displayrpidata(xxx)));
 }
@@ -48,7 +48,7 @@ void Widget::opencamara()
             qDebug()<<"listening failuture!!!!";
             exit(1);
         }
-       //workthread.start();
+       workthread.start();
        ui->SwitchButton->setText("OFF");
        selthm='o';
     }
@@ -58,7 +58,7 @@ void Widget::opencamara()
             tcpserver.close();
         else
             tcpsocket->disconnectFromHost();
-        //workthread.quit();
+        workthread.quit();
         secframebytes.resize(0);
         //framesize=0;
         ui->SwitchButton->setText("ON");
@@ -80,7 +80,9 @@ void Widget::displayerror(QAbstractSocket::SocketError)
     qDebug()<<tcpsocket->errorString();
     tcpsocket->close();
     ui->Video->clear();
+    workthread.quit();
 }
+
 
 /*void Widget::showframe(QByteArray &frameval)
 {
@@ -217,7 +219,7 @@ void Widget::on_facedetect_clicked()
 
 void Widget::on_UpButton_clicked()
 {
-    emit drivesignal("UP","low");
+    emit drivesignal("Forward","low");
 }
 
 void Widget::on_LeftButton_clicked()
@@ -232,7 +234,7 @@ void Widget::on_RightButton_clicked()
 
 void Widget::on_DownButton_clicked()
 {
-    emit drivesignal("Down","low");
+    emit drivesignal("Back","low");
 }
 
 void Widget::on_AutoDrive_clicked()
