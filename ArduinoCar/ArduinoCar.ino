@@ -9,7 +9,7 @@ const int pinRb=13;
 const int trigpin=4;
 const int echopin=5;
 
-double SetpointL=10, SetpointR=10;
+double SetpointL=20, SetpointR=20;
 double Kp=0.6, Ki=5, Kd=0;
 double outputL, outputR;
 double inputL, inputR, speedvalueL, speedvalueR;
@@ -32,29 +32,16 @@ void setup() {
 }
 
 void loop() {
-  char key[2];
+  char key;
   if(Serial.available()>0)
   {   
-      Serial.readBytes(key,sizeof(key));
+      key=char(Serial.read());
+      Serial.println(key);
   }
   else 
     return;
 
-  switch(key[1])
-  {
-    case 'l':
-      SetpointL=10;
-      SetpointR=10;
-      break;
-    case 'h':
-      SetpointL=15;
-      SetpointR=15;
-      break;
-    default:
-      break;
-  }
-  
-  switch(key[0])
+  switch(key)
   {
     case 'L':
       left();
@@ -67,6 +54,9 @@ void loop() {
       break;
     case 'B':
       back();
+      break;
+    case 'S':
+      stopfb();
       break;
     default:
       break; 
@@ -140,6 +130,11 @@ void wheelspeedR()
   DirectionlastR=DirectionR;
 }
 
+void drive()
+{
+  analogWrite(EA,outputL);
+  analogWrite(EB,outputR); 
+}
 void forbac()
 {
   digitalWrite(trigpin,LOW);
@@ -165,8 +160,7 @@ void forward()
   digitalWrite(pinRb,LOW);
   DirectionL=true;
   DirectionR=true;
-  analogWrite(EA,outputL);
-  analogWrite(EB,outputR);  
+  drive();
 }
 
 void back()
@@ -177,8 +171,7 @@ void back()
   digitalWrite(pinRb,HIGH);
   DirectionL=false;
   DirectionR=false;
-  analogWrite(EA,outputL);
-  analogWrite(EB,outputR);
+  drive();
 }
 
 void left()
@@ -189,8 +182,7 @@ void left()
   digitalWrite(pinRb,LOW);
   DirectionL=false;
   DirectionR=true;
-  analogWrite(EA,outputL);
-  analogWrite(EB,outputR);
+  drive();
 }
 
 void right()
@@ -201,8 +193,7 @@ void right()
   digitalWrite(pinRb,HIGH);
   DirectionL=true;
   DirectionR=false;
-  analogWrite(EA,outputL);
-  analogWrite(EB,outputR);
+  drive();
 }
 
 void stopfb()
@@ -210,7 +201,6 @@ void stopfb()
   analogWrite(EA,LOW);
   analogWrite(EB,LOW);
 }
-
 
 
 
