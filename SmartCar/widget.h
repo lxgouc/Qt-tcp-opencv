@@ -31,7 +31,7 @@ public:
     void detectAndDraw( Mat& img, CascadeClassifier& cascade,CascadeClassifier& nestedCascade,double scale, bool tryflip );
 
 signals:
-    void drivesignal(const char*, const char*);
+    void drivesignal(const char*);
 
 public slots:
     void getrect(Rect);
@@ -68,8 +68,6 @@ private slots:
     void on_AutoDrive_clicked();
 
     void poscal(RotatedRect&);
-
-    char errorvalue(const int&);
 
     //void displayrpidata(xxx);
 

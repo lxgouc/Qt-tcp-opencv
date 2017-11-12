@@ -21,7 +21,6 @@ Widget::Widget(QWidget *parent) :
     //framesize=0;
     connect(&tcpserver,SIGNAL(newConnection()),this,SLOT(acceptconnection()));
     connect(ui->SwitchButton,SIGNAL(clicked()),this,SLOT(opencamara()));
-    threadinit();
 }
 
 Widget::~Widget()
@@ -35,7 +34,7 @@ void Widget::threadinit()
     mythread->moveToThread(&workthread);
     connect(&workthread,SIGNAL(started()),mythread,SLOT(netinit()));
     connect(&workthread,SIGNAL(finished()),mythread,SLOT(deleteLater()));
-    connect(this,SIGNAL(drivesignal(const char*,const char*)),mythread,SLOT(deepintorpi(const char*,const char*)));
+    connect(this,SIGNAL(drivesignal(const char*)),mythread,SLOT(deepintorpi(const char*)));
     //connect(mythread,SIGNAL(rpidata(xxx)),this,SLOT(displayrpidata(xxx)));
 }
 
@@ -48,6 +47,7 @@ void Widget::opencamara()
             qDebug()<<"listening failuture!!!!";
             exit(1);
         }
+       threadinit();
        workthread.start();
        ui->SwitchButton->setText("OFF");
        selthm='o';
@@ -59,6 +59,7 @@ void Widget::opencamara()
         else
             tcpsocket->disconnectFromHost();
         workthread.quit();
+        workthread.wait();
         secframebytes.resize(0);
         //framesize=0;
         ui->SwitchButton->setText("ON");
@@ -81,6 +82,7 @@ void Widget::displayerror(QAbstractSocket::SocketError)
     tcpsocket->close();
     ui->Video->clear();
     workthread.quit();
+    workthread.wait();
 }
 
 
@@ -219,22 +221,22 @@ void Widget::on_facedetect_clicked()
 
 void Widget::on_UpButton_clicked()
 {
-    emit drivesignal("Forward","low");
+    emit drivesignal("Forward");
 }
 
 void Widget::on_LeftButton_clicked()
 {
-    emit drivesignal("Left","low");
+    emit drivesignal("Left");
 }
 
 void Widget::on_RightButton_clicked()
 {
-    emit drivesignal("Right","low");
+    emit drivesignal("Right");
 }
 
 void Widget::on_DownButton_clicked()
 {
-    emit drivesignal("Back","low");
+    emit drivesignal("Back");
 }
 
 void Widget::on_AutoDrive_clicked()
@@ -244,51 +246,13 @@ void Widget::on_AutoDrive_clicked()
 
 void Widget::poscal(RotatedRect &rotatedrect)
 {
-    static int prex;
     int nowx=rotatedrect.center.x;
-    int diff=nowx-prex;
-    const char *sigint=NULL;
     if(nowx<310)
-    {
-        switch(errorvalue(qAbs(diff)))
-        {
-        case 'l':
-            sigint="low";
-            break;
-        case 'h':
-            sigint="high";
-            break;
-        default:
-            break;
-        }
-        emit drivesignal("Lauto",sigint);
-    }
+        emit drivesignal("Lauto");
     else if(nowx>330)
-    {
-        switch(errorvalue(diff))
-        {
-        case 'l':
-            sigint="low";
-            break;
-        case 'h':
-            sigint="high";
-            break;
-        default:
-            break;
-        }
-        emit drivesignal("Rauto",sigint);
-    }
+        emit drivesignal("Rauto");
     else
-        emit drivesignal("Fauto","low");
-    prex=nowx;
-}
-
-char Widget::errorvalue(const int &errorvalue)
-{
-    if(errorvalue<20)
-        return 'l';
-    else
-        return 'h';
+        emit drivesignal("Fauto");
 }
 
 void Widget::camshiftalgorithm(Mat &image)

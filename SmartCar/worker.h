@@ -22,7 +22,7 @@ public slots:
 
     void deepinfromrpi();
 
-    void deepintorpi(const char*, const char*);
+    void deepintorpi(const char*);
 
     void displayerror(QAbstractSocket::SocketError);
 

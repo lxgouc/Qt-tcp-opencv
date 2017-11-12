@@ -29,12 +29,13 @@ void Worker::acceptconnection()
     tcpsocket=tcpserver->nextPendingConnection();
     connect(tcpsocket,SIGNAL(readyRead()),this,SLOT(deepinfromrpi()));
     connect(tcpsocket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(displayerror(QAbstractSocket::SocketError)));
+    tcpserver->close();
 }
 
 void Worker::displayerror(QAbstractSocket::SocketError)
 {
-    qDebug()<<tcpsocket->errorString();
-    tcpsocket->close();
+    qDebug()<<tcpsocket->errorString()<<"thread";
+    tcpserver->close();
 }
 
 void Worker::deepinfromrpi()
@@ -47,12 +48,9 @@ void Worker::deepinfromrpi()
 }
 
 
-void Worker::deepintorpi(const char *direction, const char *speedval)
+void Worker::deepintorpi(const char *direction)
 {
-    char data[3];
-    data[0]=direction[0];
-    data[1]=speedval[0];
-    data[2]='\0';
-    if((tcpsocket->write((const char*)data,strlen(data)))==-1)
+    char data=direction[0];
+    if((tcpsocket->write((const char*)&data,sizeof(data)))==-1)
         qDebug()<<"write drivedata error";
 }
