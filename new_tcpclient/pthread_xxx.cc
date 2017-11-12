@@ -14,11 +14,7 @@
 using namespace std;
 #define NUM 8
 #define PORT1 6668
-struct Drivedata
-{
-  const char *direction=NULL;
-  const char *speedval=NULL;
-};
+#define SIZE 1
 
 bool rpifromarduino(int &serial, char *line)
 {
@@ -49,40 +45,33 @@ void *rpifromdeepin(void *arg)
     char line[SIZE];
     while(1)
     {
-      while(len<8)
+      while(len<SIZE)
         len+=read(fildes[0],&line[len],SIZE-len);
       rpitoarduino(line,fildes[1]);
       len=0;
-      bzero(line,8);
+      bzero(line,SIZE);
     }
 }
 
-void rpitoarduino(char *line, int &serial)
+void rpitoarduino(char *line, const int &serial)
 {
-    Drivedata *drivevalue=(struct Drivedata*)line;
-    char ret[2];
-    ret[0]=drivevalue->direction[0];
-    ret[1]=drivevalue->speedval[0];
-    for(int i=0; i<2; i++)
-    {
-      if((write(serial,&ret[i],sizeof(char)))==-1)
-      {
-        perror("write data to arduino error\n");
-        exit(1);
-      }
-    }
+    
+    static char tmp;
+    if(tmp==line[0])
+      serialPutchar(serial,line[0]);
+    tmp=line[0];
 }
 
 void *pthread_xxx(void *arg)
 {
-  int tcpsocket=network_init((char*)arg,PORT1);
+  int tcpsocket=network_init((const char*)arg,PORT1);
   if(wiringPiSetup()<0)
   {
     perror("wiringPiSetup error!!!\n");
     exit(1);
   }
   int serial;
-  if((serial=serialOpen("/dev/ttyACM0",9600))<0)
+  if((serial=serialOpen("/dev/ttyACM0",19200))<0)
   {
     perror("can`t find arduino!!!\n");
     exit(1);
@@ -97,11 +86,11 @@ void *pthread_xxx(void *arg)
   char line[128];
   while(1)
   {  
-    if(rpifromarduino(serial,line))
+    /*if(rpifromarduino(serial,line))
     {
       rpitodeepin(tcpsocket,line);
       bzero(line,128);
     }
-  }
+  }*/
     pthread_exit(NULL);
 }

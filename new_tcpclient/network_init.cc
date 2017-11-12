@@ -4,7 +4,7 @@
 #include <iostream>
 using namespace std;
 
-int network_init(char *str, uint16_t port)
+int network_init(const char *str, uint16_t port)
 {
 	struct sockaddr_in frameclient;
 	int tcpsocket;
