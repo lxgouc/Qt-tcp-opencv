@@ -49,11 +49,11 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = pthread_frame.cpp \
-		pthread_xxx.cc \
+		pthread_arduino.cc \
 		network_init.cc \
 		tcpclient.cpp 
 OBJECTS       = pthread_frame.o \
-		pthread_xxx.o \
+		pthread_arduino.o \
 		network_init.o \
 		tcpclient.o
 DIST          = /opt/Qt5.6.2/5.6/gcc_64/mkspecs/features/spec_pre.prf \
@@ -190,9 +190,9 @@ DIST          = /opt/Qt5.6.2/5.6/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt5.6.2/5.6/gcc_64/mkspecs/features/yacc.prf \
 		/opt/Qt5.6.2/5.6/gcc_64/mkspecs/features/lex.prf \
 		new_tcpclient.pro pthread_frame.h \
-		pthread_xxx.h \
+		pthread_arduino.h \
 		network_init.h pthread_frame.cpp \
-		pthread_xxx.cc \
+		pthread_arduino.cc \
 		network_init.cc \
 		tcpclient.cpp
 QMAKE_TARGET  = new_tcpclient
@@ -493,8 +493,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents pthread_frame.h pthread_xxx.h network_init.h $(DISTDIR)/
-	$(COPY_FILE) --parents pthread_frame.cpp pthread_xxx.cc network_init.cc tcpclient.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents pthread_frame.h pthread_arduino.h network_init.h $(DISTDIR)/
+	$(COPY_FILE) --parents pthread_frame.cpp pthread_arduino.cc network_init.cc tcpclient.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -655,19 +655,18 @@ pthread_frame.o: pthread_frame.cpp pthread_frame.h \
 		network_init.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o pthread_frame.o pthread_frame.cpp
 
-pthread_xxx.o: pthread_xxx.cc pthread_xxx.h \
+pthread_arduino.o: pthread_arduino.cc pthread_arduino.h \
 		/usr/local/include/wiringPi.h \
 		/usr/local/include/wiringSerial.h \
 		network_init.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o pthread_xxx.o pthread_xxx.cc
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o pthread_arduino.o pthread_arduino.cc
 
 network_init.o: network_init.cc network_init.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o network_init.o network_init.cc
 
 tcpclient.o: tcpclient.cpp /usr/local/include/wiringPi.h \
 		/usr/local/include/wiringSerial.h \
-		pthread_frame.h \
-		pthread_xxx.h
+		pthread_frame.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o tcpclient.o tcpclient.cpp
 
 ####### Install
