@@ -7,9 +7,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <iostream>
-#include <QImage>
-#include <QDataStream>
-#include <QBuffer>
 #include <opencv2/opencv.hpp>
 #include "network_init.h"
 
