@@ -1,6 +1,7 @@
 #include <network_init.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <iostream>
 using namespace std;
 

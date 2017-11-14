@@ -90,7 +90,7 @@ void *pthread_xxx(void *arg)
     {
       rpitodeepin(tcpsocket,line);
       bzero(line,128);
-    }
-  }*/
+    }*/
+  }
     pthread_exit(NULL);
 }
