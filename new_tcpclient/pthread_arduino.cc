@@ -57,7 +57,7 @@ void rpitoarduino(char *line, const int &serial)
 {
     
     static char tmp;
-    if(tmp==line[0])
+    if(tmp!=line[0])
       serialPutchar(serial,line[0]);
     tmp=line[0];
 }
